@@ -35,13 +35,11 @@ import org.apache.spark.sql.types.{DataType, StructField, StructType}
 import org.apache.spark.util.Utils
 
 /**
- * Physical node for aggregation with group aggregate vectorized UDF.
- * Following eval types are supported:
+ * Physical node for aggregation with group aggregate vectorized UDF. Following eval types are
+ * supported:
  *
- * <ul>
- *   <li> SQL_GROUPED_AGG_ARROW_UDF for Arrow UDF
- *   <li> SQL_GROUPED_AGG_PANDAS_UDF for Pandas UDF
- * </ul>
+ * <ul> <li> SQL_GROUPED_AGG_ARROW_UDF for Arrow UDF <li> SQL_GROUPED_AGG_ARROW_ITER_UDF for Arrow
+ * UDF with iterator API <li> SQL_GROUPED_AGG_PANDAS_UDF for Pandas UDF </ul>
  *
  * This plan works by sending the necessary (projected) input grouped data as Arrow record batches
  * to the python worker, the python worker invokes the UDF and sends the results to the executor,
@@ -53,7 +51,9 @@ case class ArrowAggregatePythonExec(
     aggExpressions: Seq[AggregateExpression],
     resultExpressions: Seq[NamedExpression],
     child: SparkPlan,
-    evalType: Int) extends UnaryExecNode with PythonSQLMetrics {
+    evalType: Int)
+    extends UnaryExecNode
+    with PythonSQLMetrics {
   if (!supportedPythonEvalTypes.contains(evalType)) {
     throw SparkException.internalError(s"Unexpected eval type $evalType")
   }
@@ -87,8 +87,9 @@ case class ArrowAggregatePythonExec(
 
   override def requiredChildOrdering: Seq[Seq[SortOrder]] = sessionWindowOption match {
     case Some(sessionExpression) =>
-      Seq((groupingWithoutSessionExpressions ++ Seq(sessionExpression))
-        .map(SortOrder(_, Ascending)))
+      Seq(
+        (groupingWithoutSessionExpressions ++ Seq(sessionExpression))
+          .map(SortOrder(_, Ascending)))
 
     case None => Seq(groupingExpressions.map(SortOrder(_, Ascending)))
   }
@@ -142,7 +143,6 @@ case class ArrowAggregatePythonExec(
       StructField(s"_$i", dt)
     }.toArray)
 
-
     val jobArtifactUUID = JobArtifactSet.getCurrentJobArtifactState.map(_.uuid)
     val sessionUUID = {
       Option(session).collect {
@@ -152,71 +152,75 @@ case class ArrowAggregatePythonExec(
     }
 
     // Map grouped rows to ArrowPythonRunner results, Only execute if partition is not empty
-    inputRDD.mapPartitionsInternal { iter => if (iter.isEmpty) iter else {
-      // If we have session window expression in aggregation, we wrap iterator with
-      // UpdatingSessionIterator to calculate sessions for input rows and update
-      // rows' session column, so that further aggregations can aggregate input rows
-      // for the same session.
-      val newIter: Iterator[InternalRow] = mayAppendUpdatingSessionIterator(iter)
-      val prunedProj = UnsafeProjection.create(allInputs.toSeq, child.output)
+    inputRDD.mapPartitionsInternal { iter =>
+      if (iter.isEmpty) iter
+      else {
+        // If we have session window expression in aggregation, we wrap iterator with
+        // UpdatingSessionIterator to calculate sessions for input rows and update
+        // rows' session column, so that further aggregations can aggregate input rows
+        // for the same session.
+        val newIter: Iterator[InternalRow] = mayAppendUpdatingSessionIterator(iter)
+        val prunedProj = UnsafeProjection.create(allInputs.toSeq, child.output)
 
-      val groupedItr = if (groupingExpressions.isEmpty) {
-        // Use an empty unsafe row as a place holder for the grouping key
-        Iterator((new UnsafeRow(), newIter))
-      } else {
-        GroupedIterator(newIter, groupingExpressions, child.output)
+        val groupedItr = if (groupingExpressions.isEmpty) {
+          // Use an empty unsafe row as a place holder for the grouping key
+          Iterator((new UnsafeRow(), newIter))
+        } else {
+          GroupedIterator(newIter, groupingExpressions, child.output)
+        }
+        val grouped = groupedItr.map { case (key, rows) =>
+          (key, rows.map(prunedProj))
+        }
+
+        val context = TaskContext.get()
+
+        // The queue used to buffer input rows so we can drain it to
+        // combine input with output from Python.
+        val queue = HybridRowQueue(
+          context.taskMemoryManager(),
+          new File(Utils.getLocalDir(SparkEnv.get.conf)),
+          groupingExpressions.length)
+        context.addTaskCompletionListener[Unit] { _ =>
+          queue.close()
+        }
+
+        // Add rows to queue to join later with the result.
+        val projectedRowIter = grouped.map { case (groupingKey, rows) =>
+          queue.add(groupingKey.asInstanceOf[UnsafeRow])
+          rows
+        }
+
+        val runner = new ArrowPythonWithNamedArgumentRunner(
+          pyFuncs,
+          evalType,
+          argMetas,
+          aggInputSchema,
+          sessionLocalTimeZone,
+          largeVarTypes,
+          pythonRunnerConf,
+          pythonMetrics,
+          jobArtifactUUID,
+          sessionUUID,
+          conf.pythonUDFProfiler) with GroupedPythonArrowInput
+
+        val columnarBatchIter = runner.compute(projectedRowIter, context.partitionId(), context)
+
+        val joinedAttributes =
+          groupingExpressions.map(_.toAttribute) ++ aggExpressions.map(_.resultAttribute)
+        val joined = new JoinedRow
+        val resultProj = UnsafeProjection.create(resultExpressions, joinedAttributes)
+
+        columnarBatchIter.map(_.rowIterator.next()).map { aggOutputRow =>
+          val leftRow = queue.remove()
+          val joinedRow = joined(leftRow, aggOutputRow)
+          resultProj(joinedRow)
+        }
       }
-      val grouped = groupedItr.map { case (key, rows) =>
-        (key, rows.map(prunedProj))
-      }
-
-      val context = TaskContext.get()
-
-      // The queue used to buffer input rows so we can drain it to
-      // combine input with output from Python.
-      val queue = HybridRowQueue(context.taskMemoryManager(),
-        new File(Utils.getLocalDir(SparkEnv.get.conf)), groupingExpressions.length)
-      context.addTaskCompletionListener[Unit] { _ =>
-        queue.close()
-      }
-
-      // Add rows to queue to join later with the result.
-      val projectedRowIter = grouped.map { case (groupingKey, rows) =>
-        queue.add(groupingKey.asInstanceOf[UnsafeRow])
-        rows
-      }
-
-      val runner = new ArrowPythonWithNamedArgumentRunner(
-        pyFuncs,
-        evalType,
-        argMetas,
-        aggInputSchema,
-        sessionLocalTimeZone,
-        largeVarTypes,
-        pythonRunnerConf,
-        pythonMetrics,
-        jobArtifactUUID,
-        sessionUUID,
-        conf.pythonUDFProfiler) with GroupedPythonArrowInput
-
-      val columnarBatchIter = runner.compute(projectedRowIter, context.partitionId(), context)
-
-      val joinedAttributes =
-        groupingExpressions.map(_.toAttribute) ++ aggExpressions.map(_.resultAttribute)
-      val joined = new JoinedRow
-      val resultProj = UnsafeProjection.create(resultExpressions, joinedAttributes)
-
-      columnarBatchIter.map(_.rowIterator.next()).map { aggOutputRow =>
-        val leftRow = queue.remove()
-        val joinedRow = joined(leftRow, aggOutputRow)
-        resultProj(joinedRow)
-      }
-    }}
+    }
   }
 
   override protected def withNewChildInternal(newChild: SparkPlan): SparkPlan =
     copy(child = newChild)
-
 
   private def mayAppendUpdatingSessionIterator(
       iter: Iterator[InternalRow]): Iterator[InternalRow] = {
@@ -226,8 +230,14 @@ case class ArrowAggregatePythonExec(
         val spillThreshold = conf.windowExecBufferSpillThreshold
         val sizeInBytesSpillThreshold = conf.windowExecBufferSpillSizeThreshold
 
-        new UpdatingSessionsIterator(iter, groupingWithoutSessionExpressions, sessionExpression,
-          child.output, inMemoryThreshold, spillThreshold, sizeInBytesSpillThreshold)
+        new UpdatingSessionsIterator(
+          iter,
+          groupingWithoutSessionExpressions,
+          sessionExpression,
+          child.output,
+          inMemoryThreshold,
+          spillThreshold,
+          sizeInBytesSpillThreshold)
 
       case None => iter
     }
@@ -238,6 +248,7 @@ case class ArrowAggregatePythonExec(
   private def supportedPythonEvalTypes: Array[Int] =
     Array(
       PythonEvalType.SQL_GROUPED_AGG_ARROW_UDF,
+      PythonEvalType.SQL_GROUPED_AGG_ARROW_ITER_UDF,
       PythonEvalType.SQL_GROUPED_AGG_PANDAS_UDF)
 }
 
@@ -248,9 +259,14 @@ object ArrowAggregatePythonExec {
       resultExpressions: Seq[NamedExpression],
       child: SparkPlan): ArrowAggregatePythonExec = {
     val evalTypes = aggExpressions.map(_.aggregateFunction.asInstanceOf[PythonUDAF].evalType)
-    assert(evalTypes.distinct.size == 1,
+    assert(
+      evalTypes.distinct.size == 1,
       "All aggregate functions must have the same eval type in ArrowAggregatePythonExec")
     new ArrowAggregatePythonExec(
-      groupingExpressions, aggExpressions, resultExpressions, child, evalTypes.head)
+      groupingExpressions,
+      aggExpressions,
+      resultExpressions,
+      child,
+      evalTypes.head)
   }
 }

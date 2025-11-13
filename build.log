@@ -1,0 +1,568 @@
+Using /opt/homebrew/opt/openjdk@17 as default JAVA_HOME.
+Note, this will be overridden by -java-home if it is set.
+[info] [launcher] getting org.scala-sbt sbt 1.11.7  (this may take some time)...
+[info] [launcher] getting Scala 2.12.20 (for sbt)...
+[info] welcome to sbt 1.11.7 (Homebrew Java 17.0.16)
+[info] loading settings for project spark-build from plugins.sbt...
+[info] loading project definition from /Users/yicong.huang/Repos/spark/project
+[info] resolving key references (40230 settings) ...
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] Resolving NormalizedArtifact(com.fasterxml.jackson,jackson-bom,2.20.1)
+[info] set current project to spark-parent (in build file:/Users/yicong.huang/Repos/spark/)
+[warn] there are 216 keys that are not used by any other settings/tasks:
+[warn]  
+[warn] * assembly / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * assembly / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * assembly / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * assembly / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * assembly / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * assembly / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * avro / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * avro / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * avro / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * avro / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * avro / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * avro / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * catalyst / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * catalyst / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * catalyst / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * catalyst / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * catalyst / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * catalyst / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * common-utils / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * common-utils / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * common-utils / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * common-utils / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * common-utils / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * common-utils / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * common-utils-java / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * common-utils-java / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * common-utils-java / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * common-utils-java / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * common-utils-java / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * common-utils-java / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * connect / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * connect / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * connect / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * connect / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * connect / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * connect / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * connect-client-jdbc / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * connect-client-jdbc / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * connect-client-jdbc / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * connect-client-jdbc / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * connect-client-jdbc / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * connect-client-jdbc / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * connect-client-jvm / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * connect-client-jvm / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * connect-client-jvm / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * connect-client-jvm / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * connect-client-jvm / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * connect-client-jvm / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * connect-common / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * connect-common / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * connect-common / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * connect-common / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * connect-common / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * connect-common / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * connect-shims / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * connect-shims / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * connect-shims / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * connect-shims / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * connect-shims / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * connect-shims / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * core / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * core / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * core / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * core / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * core / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * core / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * examples / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * examples / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * examples / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * examples / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * examples / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * examples / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * graphx / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * graphx / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * graphx / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * graphx / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * graphx / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * graphx / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * hive / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * hive / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * hive / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * hive / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * hive / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * hive / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * kvstore / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * kvstore / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * kvstore / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * kvstore / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * kvstore / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * kvstore / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * launcher / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * launcher / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * launcher / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * launcher / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * launcher / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * launcher / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * mllib / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * mllib / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * mllib / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * mllib / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * mllib / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * mllib / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * mllib-local / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * mllib-local / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * mllib-local / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * mllib-local / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * mllib-local / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * mllib-local / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * network-common / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * network-common / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * network-common / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * network-common / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * network-common / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * network-common / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * network-shuffle / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * network-shuffle / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * network-shuffle / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * network-shuffle / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * network-shuffle / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * network-shuffle / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * pipelines / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * pipelines / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * pipelines / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * pipelines / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * pipelines / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * pipelines / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * protobuf / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * protobuf / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * protobuf / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * protobuf / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * protobuf / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * protobuf / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * repl / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * repl / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * repl / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * repl / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * repl / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * repl / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * sketch / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * sketch / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * sketch / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * sketch / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * sketch / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * sketch / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * spark / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * spark / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * spark / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * spark / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * spark / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * spark / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * sql / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * sql / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * sql / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * sql / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * sql / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * sql / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * sql-api / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * sql-api / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * sql-api / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * sql-api / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * sql-api / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * sql-api / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * sql-kafka-0-10 / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * sql-kafka-0-10 / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * sql-kafka-0-10 / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * sql-kafka-0-10 / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * sql-kafka-0-10 / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * sql-kafka-0-10 / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * streaming / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * streaming / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * streaming / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * streaming / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * streaming / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * streaming / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * streaming-kafka-0-10 / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * streaming-kafka-0-10 / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * streaming-kafka-0-10 / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * streaming-kafka-0-10 / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * streaming-kafka-0-10 / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * streaming-kafka-0-10 / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * streaming-kafka-0-10-assembly / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * streaming-kafka-0-10-assembly / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * streaming-kafka-0-10-assembly / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * streaming-kafka-0-10-assembly / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * streaming-kafka-0-10-assembly / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * streaming-kafka-0-10-assembly / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * tags / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * tags / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * tags / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * tags / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * tags / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * tags / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * token-provider-kafka-0-10 / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * token-provider-kafka-0-10 / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * token-provider-kafka-0-10 / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * token-provider-kafka-0-10 / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * token-provider-kafka-0-10 / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * token-provider-kafka-0-10 / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * tools / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * tools / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * tools / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * tools / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * tools / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * tools / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * unsafe / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * unsafe / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * unsafe / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * unsafe / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * unsafe / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * unsafe / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn] * variant / Compile / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1627
+[warn] * variant / M2r / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:322
+[warn] * variant / Sbt / publishMavenStyle
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:323
+[warn] * variant / Test / checkstyle / javaSource
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:1628
+[warn] * variant / scalaStyleOnCompile / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:243
+[warn] * variant / scalaStyleOnTest / logLevel
+[warn]   +- /Users/yicong.huang/Repos/spark/project/SparkBuild.scala:244
+[warn]  
+[warn] note: a setting might still be used by a command; to exclude a key from this `lintUnused` check
+[warn] either append it to `Global / excludeLintKeys` or call .withRank(KeyRanks.Invisible) on the key
+[success] Total time: 2 s, completed Nov 13, 2025, 12:46:22 AM
+[info] compiling 2 Scala sources and 9 Java sources to /Users/yicong.huang/Repos/spark/common/tags/target/scala-2.13/classes ...
+[info] compiling 1 Scala source to /Users/yicong.huang/Repos/spark/tools/target/scala-2.13/classes ...
+[info] done compiling
+[info] done compiling
+[info] compiling 21 Java sources to /Users/yicong.huang/Repos/spark/launcher/target/scala-2.13/classes ...
+[info] Note: /Users/yicong.huang/Repos/spark/launcher/src/main/java/org/apache/spark/launcher/LauncherServer.java uses or overrides a deprecated API.
+[info] Note: Recompile with -Xlint:deprecation for details.
+[info] done compiling
+[info] compiling 1 Scala source to /Users/yicong.huang/Repos/spark/sql/connect/shims/target/scala-2.13/classes ...
+[info] done compiling
+[info] compiling 35 Java sources to /Users/yicong.huang/Repos/spark/common/utils-java/target/scala-2.13/classes ...
+[info] compiling 11 Java sources to /Users/yicong.huang/Repos/spark/common/sketch/target/scala-2.13/classes ...
+[warn] /Users/yicong.huang/Repos/spark/common/sketch/src/main/java/org/apache/spark/util/sketch/Platform.java:22:16:  Unsafe is internal proprietary API and may be removed in a future release
+[warn] import sun.misc.Unsafe;
+[warn]                ^
+[warn]                ^
+[warn] /Users/yicong.huang/Repos/spark/common/sketch/src/main/java/org/apache/spark/util/sketch/Platform.java:28:24:  Unsafe is internal proprietary API and may be removed in a future release
+[warn]   private static final Unsafe _UNSAFE;
+[warn]                        ^
+[warn]                        ^
+[warn] /Users/yicong.huang/Repos/spark/common/sketch/src/main/java/org/apache/spark/util/sketch/Platform.java:150:13:  Unsafe is internal proprietary API and may be removed in a future release
+[warn]     sun.misc.Unsafe unsafe;
+[warn]             ^
+[warn]             ^
+[warn] /Users/yicong.huang/Repos/spark/common/sketch/src/main/java/org/apache/spark/util/sketch/Platform.java:152:27:  Unsafe is internal proprietary API and may be removed in a future release
+[warn]       Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+[warn]                           ^
+[warn]                           ^
+[warn] /Users/yicong.huang/Repos/spark/common/sketch/src/main/java/org/apache/spark/util/sketch/Platform.java:154:25:  Unsafe is internal proprietary API and may be removed in a future release
+[warn]       unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+[warn]                         ^5 warnings
+[warn]                         ^
+[info] done compiling
+[info] done compiling
+[info] compiling 35 Scala sources and 2 Java sources to /Users/yicong.huang/Repos/spark/common/utils/target/scala-2.13/classes ...
+[info] done compiling
+[info] compiling 102 Java sources to /Users/yicong.huang/Repos/spark/common/network-common/target/scala-2.13/classes ...
+[info] compiling 15 Java sources to /Users/yicong.huang/Repos/spark/common/kvstore/target/scala-2.13/classes ...
+[info] compiling 7 Java sources to /Users/yicong.huang/Repos/spark/common/variant/target/scala-2.13/classes ...
+[info] done compiling
+[info] done compiling
+[warn] /Users/yicong.huang/Repos/spark/common/network-common/src/main/java/org/apache/spark/network/TransportContext.java:142:30:  [removal] separateChunkFetchRequest() in TransportConf has been deprecated and marked for removal
+[warn]         !isClientOnly && conf.separateChunkFetchRequest()) {
+[warn]                              ^
+[warn]                              ^
+[warn] /Users/yicong.huang/Repos/spark/common/network-common/src/main/java/org/apache/spark/network/TransportContext.java:145:15:  [removal] chunkFetchHandlerThreads() in TransportConf has been deprecated and marked for removal
+[warn]           conf.chunkFetchHandlerThreads(),
+[warn]               ^
+[warn]               ^
+[warn] /Users/yicong.huang/Repos/spark/common/network-common/src/main/java/org/apache/spark/network/TransportContext.java:292:45:  [removal] separateChunkFetchRequest() in TransportConf has been deprecated and marked for removal
+[warn]     boolean separateChunkFetchRequest = conf.separateChunkFetchRequest();
+[warn]                                             ^Note: Some input files use or override a deprecated API.
+[warn] Note: Recompile with -Xlint:deprecation for details.
+[warn] 3 warnings
+[warn]                                             ^
+[info] done compiling
+[info] compiling 51 Java sources to /Users/yicong.huang/Repos/spark/common/network-shuffle/target/scala-2.13/classes ...
+[error] /Users/yicong.huang/Repos/spark/common/network-shuffle/src/main/java/org/apache/spark/network/shuffle/protocol/AbstractFetchShuffleBlocks.java:24:40:  error: package org.apache.commons.lang3.builder does not exist
+[error] import org.apache.commons.lang3.builder.ToStringBuilder;
+[error]                                        ^
+[error]                                        ^
+[error] /Users/yicong.huang/Repos/spark/common/network-shuffle/src/main/java/org/apache/spark/network/shuffle/protocol/AbstractFetchShuffleBlocks.java:25:40:  error: package org.apache.commons.lang3.builder does not exist
+[error] import org.apache.commons.lang3.builder.ToStringStyle;
+[error]                                        ^
+[error]                                        ^
+[error] /Users/yicong.huang/Repos/spark/common/network-shuffle/src/main/java/org/apache/spark/network/shuffle/protocol/AbstractFetchShuffleBlocks.java:48:10:  error: cannot find symbol
+[error]   public ToStringBuilder toStringHelper() {
+[error]          ^  symbol:   class ToStringBuilder
+[error]   location: class AbstractFetchShuffleBlocks
+[error] 3 errors
+[error]          ^
+[warn] javac exited with exit code 1
+[error] lmcoursier.internal.shaded.coursier.error.FetchError$DownloadingArtifacts: Error fetching artifacts:
+[error] file:/Users/yicong.huang/.m2/repository/com/twitter/chill_2.13/0.10.0/chill_2.13-0.10.0.jar: not found: /Users/yicong.huang/.m2/repository/com/twitter/chill_2.13/0.10.0/chill_2.13-0.10.0.jar
+[error] file:/Users/yicong.huang/.m2/repository/com/twitter/chill-java/0.10.0/chill-java-0.10.0.jar: not found: /Users/yicong.huang/.m2/repository/com/twitter/chill-java/0.10.0/chill-java-0.10.0.jar
+[error] file:/Users/yicong.huang/.m2/repository/com/esotericsoftware/kryo-shaded/4.0.3/kryo-shaded-4.0.3.jar: not found: /Users/yicong.huang/.m2/repository/com/esotericsoftware/kryo-shaded/4.0.3/kryo-shaded-4.0.3.jar
+[error] 
+[error] 	at lmcoursier.internal.shaded.coursier.Artifacts$.$anonfun$fetchArtifacts$9(Artifacts.scala:365)
+[error] 	at lmcoursier.internal.shaded.coursier.util.Task$.$anonfun$flatMap$extension$1(Task.scala:14)
+[error] 	at lmcoursier.internal.shaded.coursier.util.Task$.$anonfun$flatMap$extension$1$adapted(Task.scala:14)
+[error] 	at lmcoursier.internal.shaded.coursier.util.Task$.wrap(Task.scala:82)
+[error] 	at lmcoursier.internal.shaded.coursier.util.Task$.$anonfun$flatMap$2(Task.scala:14)
+[error] 	at scala.concurrent.Future.$anonfun$flatMap$1(Future.scala:307)
+[error] 	at scala.concurrent.impl.Promise.$anonfun$transformWith$1(Promise.scala:51)
+[error] 	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:74)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[error] Caused by: lmcoursier.internal.shaded.coursier.cache.ArtifactError$NotFound: not found: /Users/yicong.huang/.m2/repository/com/twitter/chill_2.13/0.10.0/chill_2.13-0.10.0.jar
+[error] 	at lmcoursier.internal.shaded.coursier.cache.internal.Downloader.$anonfun$checkFileExists$1(Downloader.scala:603)
+[error] 	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+[error] 	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+[error] 	at scala.util.Success.map(Try.scala:213)
+[error] 	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+[error] 	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:42)
+[error] 	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:74)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[error] 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[error] 	at java.base/java.lang.Thread.run(Thread.java:840)
+[error] (unsafe / update) lmcoursier.internal.shaded.coursier.error.FetchError$DownloadingArtifacts: Error fetching artifacts:
+[error] file:/Users/yicong.huang/.m2/repository/com/twitter/chill_2.13/0.10.0/chill_2.13-0.10.0.jar: not found: /Users/yicong.huang/.m2/repository/com/twitter/chill_2.13/0.10.0/chill_2.13-0.10.0.jar
+[error] file:/Users/yicong.huang/.m2/repository/com/twitter/chill-java/0.10.0/chill-java-0.10.0.jar: not found: /Users/yicong.huang/.m2/repository/com/twitter/chill-java/0.10.0/chill-java-0.10.0.jar
+[error] file:/Users/yicong.huang/.m2/repository/com/esotericsoftware/kryo-shaded/4.0.3/kryo-shaded-4.0.3.jar: not found: /Users/yicong.huang/.m2/repository/com/esotericsoftware/kryo-shaded/4.0.3/kryo-shaded-4.0.3.jar
+[error] (network-shuffle / Compile / compileIncremental) javac returned non-zero exit code
+[error] Total time: 23 s, completed Nov 13, 2025, 12:46:45 AM

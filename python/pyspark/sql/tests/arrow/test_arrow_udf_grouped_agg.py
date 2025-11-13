@@ -1059,6 +1059,83 @@ class GroupedAggArrowUDFTestsMixin:
             ],
         )
 
+    def test_iterator_grouped_agg_single_column(self):
+        """
+        Test iterator API for grouped aggregation with single column.
+        """
+        import pyarrow as pa
+        from typing import Iterator
+
+        @arrow_udf("double")
+        def arrow_mean_iter(it: Iterator[pa.Array]) -> float:
+            sum_val = 0.0
+            cnt = 0
+            for v in it:
+                assert isinstance(v, pa.Array)
+                sum_val += pa.compute.sum(v).as_py()
+                cnt += len(v)
+            return sum_val / cnt if cnt > 0 else 0.0
+
+        df = self.spark.createDataFrame(
+            [(1, 1.0), (1, 2.0), (2, 3.0), (2, 5.0), (2, 10.0)], ("id", "v")
+        )
+
+        result = df.groupby("id").agg(arrow_mean_iter(df["v"]).alias("mean")).sort("id")
+        expected = df.groupby("id").agg(sf.mean(df["v"]).alias("mean")).sort("id").collect()
+
+        self.assertEqual(expected, result.collect())
+
+    @unittest.skipIf(not have_numpy, numpy_requirement_message)
+    def test_iterator_grouped_agg_multiple_columns(self):
+        """
+        Test iterator API for grouped aggregation with multiple columns.
+        """
+        import pyarrow as pa
+        import numpy as np
+        from typing import Iterator, Tuple
+
+        @arrow_udf("double")
+        def arrow_weighted_mean_iter(it: Iterator[Tuple[pa.Array, pa.Array]]) -> float:
+            weighted_sum = 0.0
+            weight = 0.0
+            for v, w in it:
+                assert isinstance(v, pa.Array)
+                assert isinstance(w, pa.Array)
+                weighted_sum += np.dot(v, w)
+                weight += pa.compute.sum(w).as_py()
+            return weighted_sum / weight if weight > 0 else 0.0
+
+        df = self.spark.createDataFrame(
+            [(1, 1.0, 1.0), (1, 2.0, 2.0), (2, 3.0, 1.0), (2, 5.0, 2.0), (2, 10.0, 3.0)],
+            ("id", "v", "w"),
+        )
+
+        result = (
+            df.groupby("id").agg(arrow_weighted_mean_iter(df["v"], df["w"]).alias("wm")).sort("id")
+        )
+        expected = df.groupby("id").agg(sf.mean(df["v"]).alias("wm")).sort("id").collect()
+
+        # Check that results are close (floating point comparison)
+        result_collected = result.collect()
+        for r, e in zip(result_collected, expected):
+            self.assertAlmostEqual(r["wm"], e["wm"], places=5)
+
+    def test_iterator_grouped_agg_eval_type(self):
+        """
+        Test that the eval type is correctly inferred for iterator grouped agg UDFs.
+        """
+        import pyarrow as pa
+        from typing import Iterator
+
+        @arrow_udf("double")
+        def arrow_sum_iter(it: Iterator[pa.Array]) -> float:
+            total = 0.0
+            for v in it:
+                total += pa.compute.sum(v).as_py()
+            return total
+
+        self.assertEqual(arrow_sum_iter.evalType, PythonEvalType.SQL_GROUPED_AGG_ARROW_ITER_UDF)
+
 
 class GroupedAggArrowUDFTests(GroupedAggArrowUDFTestsMixin, ReusedSQLTestCase):
     pass
