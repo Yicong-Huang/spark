@@ -135,16 +135,27 @@ class ArrowStreamLoader(Serializer):
 
 
 class ArrowFlightLoader(Serializer):
+    # Sentinel object to signal end of stream - avoids race conditions
+    _END_OF_STREAM = object()
+    # Default queue size for backpressure - prevents OOM when producer is faster than consumer
+    _DEFAULT_QUEUE_SIZE = 16
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         import pyarrow.flight as flight
 
+        # Capture class-level constants for use in nested class
+        END_OF_STREAM = ArrowFlightLoader._END_OF_STREAM
+        DEFAULT_QUEUE_SIZE = ArrowFlightLoader._DEFAULT_QUEUE_SIZE
+
         class FlightReader(flight.FlightServerBase):
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
-                self._batches = queue.Queue()
-                self._reading = True
+                # Fix #2: Bounded queue provides backpressure - blocks producer when full
+                self._batches = queue.Queue(maxsize=DEFAULT_QUEUE_SIZE)
+                # Fix #3: Use threading.Event for thread-safe completion signaling
+                self._error: Optional[Exception] = None
 
             def do_put(
                 self,
@@ -153,16 +164,31 @@ class ArrowFlightLoader(Serializer):
                 reader: flight.MetadataRecordBatchReader,
                 writer: flight.FlightMetadataWriter,
             ):
-                for chunk in reader:
-                    self._batches.put(chunk.data)
-                self._reading = False
+                try:
+                    for chunk in reader:
+                        self._batches.put(chunk.data)
+                except Exception as e:
+                    # Capture any error that occurs during data transfer
+                    self._error = e
+                finally:
+                    # Fix #3: Use sentinel value to signal end of stream
+                    # This is thread-safe and avoids race conditions
+                    self._batches.put(END_OF_STREAM)
 
             def __iter__(self):
-                while self._reading or self._batches.qsize() > 0:
-                    try:
-                        yield self._batches.get(block=False)
-                    except queue.Empty:
-                        pass
+                # Fix #1: Use blocking get() instead of busy-waiting
+                # This prevents CPU spinning when queue is empty
+                while True:
+                    batch = self._batches.get()  # Blocks until item available
+
+                    # Check for sentinel - signals end of stream
+                    if batch is END_OF_STREAM:
+                        # Re-raise any error that occurred during do_put
+                        if self._error is not None:
+                            raise self._error
+                        break
+
+                    yield batch
 
         self._flight_reader = FlightReader(flight.Location.for_grpc_tcp("localhost", 0))
 
