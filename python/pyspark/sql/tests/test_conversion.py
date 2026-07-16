@@ -874,6 +874,33 @@ class ArrowColumnToPylistTests(unittest.TestCase):
         ):
             self.assertEqual(ArrowTableToRowsConversion._to_pylist(column), [[1, None], None])
 
+    def test_manual_bulk_gate_evaluated_once(self):
+        import pyarrow as pa
+
+        calls = 0
+
+        def should_manual_bulk():
+            nonlocal calls
+            calls += 1
+            return True
+
+        column = pa.chunked_array(
+            [
+                pa.array(
+                    [[{"k": [1, None]}, None], None],
+                    type=pa.list_(pa.struct([("k", pa.list_(pa.int32()))])),
+                )
+            ]
+        )
+        with unittest.mock.patch.object(
+            ArrowTableToRowsConversion, "_should_manual_bulk", should_manual_bulk
+        ):
+            self.assertEqual(
+                ArrowTableToRowsConversion._to_pylist(column),
+                [[{"k": [1, None]}, None], None],
+            )
+        self.assertEqual(calls, 1)
+
     def _assert_identical_types(self, actual, expected):
         self.assertIs(type(actual), type(expected))
         if isinstance(actual, (list, tuple)):

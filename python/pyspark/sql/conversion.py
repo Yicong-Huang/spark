@@ -1035,15 +1035,25 @@ class ArrowTableToRowsConversion:
         ``column.to_pylist()``) once the minimum supported PyArrow version includes the
         fix for apache/arrow#50326.
         """
+        return ArrowTableToRowsConversion._to_pylist_with_manual_bulk(
+            column, ArrowTableToRowsConversion._should_manual_bulk()
+        )
+
+    @staticmethod
+    def _to_pylist_with_manual_bulk(
+        column: Union["pa.Array", "pa.ChunkedArray"], manual_bulk: bool
+    ) -> List[Any]:
         import pyarrow as pa
 
-        if not ArrowTableToRowsConversion._should_manual_bulk():
+        if not manual_bulk:
             return column.to_pylist()
 
         if isinstance(column, pa.ChunkedArray):
             result = []
             for chunk in column.chunks:
-                result.extend(ArrowTableToRowsConversion._to_pylist(chunk))
+                result.extend(
+                    ArrowTableToRowsConversion._to_pylist_with_manual_bulk(chunk, manual_bulk)
+                )
             return result
 
         if len(column) == 0:
@@ -1056,8 +1066,12 @@ class ArrowTableToRowsConversion:
             offsets = column.offsets.to_numpy(zero_copy_only=True).tolist()
             start = offsets[0]
             length = offsets[-1] - start
-            keys = ArrowTableToRowsConversion._to_pylist(column.keys.slice(start, length))
-            items = ArrowTableToRowsConversion._to_pylist(column.items.slice(start, length))
+            keys = ArrowTableToRowsConversion._to_pylist_with_manual_bulk(
+                column.keys.slice(start, length), manual_bulk
+            )
+            items = ArrowTableToRowsConversion._to_pylist_with_manual_bulk(
+                column.items.slice(start, length), manual_bulk
+            )
             if column.null_count == 0:
                 return [
                     list(
@@ -1090,8 +1104,8 @@ class ArrowTableToRowsConversion:
             # fail loudly if a future Arrow list variant ever violated it.
             offsets = column.offsets.to_numpy(zero_copy_only=True).tolist()
             start = offsets[0]
-            flat = ArrowTableToRowsConversion._to_pylist(
-                column.values.slice(start, offsets[-1] - start)
+            flat = ArrowTableToRowsConversion._to_pylist_with_manual_bulk(
+                column.values.slice(start, offsets[-1] - start), manual_bulk
             )
             if column.null_count == 0:
                 return [flat[offsets[i] - start : offsets[i + 1] - start] for i in range(n)]
@@ -1109,7 +1123,7 @@ class ArrowTableToRowsConversion:
                 # let the generic path surface the same error.
                 return column.to_pylist()
             fields = [
-                ArrowTableToRowsConversion._to_pylist(column.field(i))
+                ArrowTableToRowsConversion._to_pylist_with_manual_bulk(column.field(i), manual_bulk)
                 for i in range(column.type.num_fields)
             ]
             if column.null_count == 0:
