@@ -128,7 +128,7 @@ class CogroupedMapInArrowTestsMixin(CogroupedMapInArrowTestsFuncMixin):
         with self.quiet():
             with self.assertRaisesRegex(
                 PythonException,
-                "Return type of the user-defined function should be pyarrow.Table, but is tuple",
+                r"pyarrow\.Table.*\btuple\b",
             ):
                 self.cogrouped.applyInArrow(func, schema="id long").collect()
 

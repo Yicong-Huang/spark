@@ -322,7 +322,7 @@ class ApplyInPandasTestsMixin:
     def check_apply_in_pandas_not_returning_pandas_dataframe(self):
         with self.assertRaisesRegex(
             PythonException,
-            "Return type of the user-defined function should be pandas.DataFrame, but is tuple.",
+            r"pandas\.DataFrame.*\btuple\b",
         ):
             self._test_apply_in_pandas(lambda key, pdf: key)
 

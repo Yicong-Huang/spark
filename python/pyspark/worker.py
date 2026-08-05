@@ -27,11 +27,10 @@ import inspect
 import itertools
 import json
 import warnings
-from collections.abc import Iterator
+from collections.abc import Collection, Iterable, Iterator
 from typing import (
     Any,
     Callable,
-    Iterable,
     Optional,
     Tuple,
     Type,
@@ -249,15 +248,31 @@ def verify_return_type(result: T, expected_type: Type[T]) -> T:
     """
     Verify a UDF return value against an expected type.
 
-    Returns ``result`` unchanged if ``isinstance(result, expected_type)``.
-    For ``Iterator[T]``, returns a lazy iterator that checks each element
-    against ``T`` on consumption. Raises ``PySparkTypeError`` on mismatch.
-    """
-    if get_origin(expected_type) is Iterator:
-        (element_type,) = get_args(expected_type)
-        label = f"iterator of {_top_level_package(element_type)}.{element_type.__name__}"
+    Dispatches on the type expression:
 
-        if not isinstance(result, Iterator):
+    - ``Iterator[X]`` / ``Iterable[X]``: checks the container is an
+      ``Iterator`` / ``Iterable`` and returns a lazy iterator that checks each
+      element against ``X`` on consumption.
+    - ``Collection[X]``: checks the container is a ``Collection`` (sized and
+      iterable, e.g. ``pd.Series`` / ``np.ndarray`` / ``list``). Elements are
+      not checked.
+    - plain ``X``: checks ``isinstance(result, X)``.
+
+    Returns ``result`` (or the checked lazy iterator) on success. Raises
+    ``PySparkTypeError`` with ``UDF_RETURN_TYPE`` on mismatch. The ``expected``
+    message text is built automatically from the type expression.
+    """
+    origin = get_origin(expected_type)
+
+    if origin is Iterator or origin is Iterable:
+        (element_type,) = get_args(expected_type)
+        # The label reflects the requested shape: Iterator[X] -> "iterator of X"
+        # (e.g. mapInArrow), Iterable[X] -> "iterable of X". The shapes differ in
+        # strictness too: Iterator rejects a plain list, Iterable accepts it.
+        prefix = "iterator of" if origin is Iterator else "iterable of"
+        label = f"{prefix} {_top_level_package(element_type)}.{element_type.__name__}"
+
+        if not isinstance(result, origin):
             raise PySparkTypeError(
                 errorClass="UDF_RETURN_TYPE",
                 messageParameters={"expected": label, "actual": type(result).__name__},
@@ -269,12 +284,24 @@ def verify_return_type(result: T, expected_type: Type[T]) -> T:
                     errorClass="UDF_RETURN_TYPE",
                     messageParameters={
                         "expected": label,
-                        "actual": f"iterator of {type(element).__name__}",
+                        "actual": f"{prefix} {type(element).__name__}",
                     },
                 )
             return element
 
         return map(check_element, result)  # type: ignore[return-value]
+
+    if origin is Collection:
+        (element_type,) = get_args(expected_type)
+        if not isinstance(result, Collection):
+            raise PySparkTypeError(
+                errorClass="UDF_RETURN_TYPE",
+                messageParameters={
+                    "expected": f"{_top_level_package(element_type)}.{element_type.__name__}",
+                    "actual": type(result).__name__,
+                },
+            )
+        return result
 
     if not isinstance(result, expected_type):
         raise PySparkTypeError(
@@ -2675,9 +2702,6 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
         assert num_udfs == 1, "One MAP_PANDAS_ITER UDF expected here."
         map_udf, _, _, return_type = udfs[0]
         output_schema = StructType([StructField("_0", return_type)])
-        iter_type_label = (
-            "pandas.DataFrame" if isinstance(return_type, StructType) else "pandas.Series"
-        )
         elem_type = pd.DataFrame if isinstance(return_type, StructType) else pd.Series
 
         def func(
@@ -2699,27 +2723,11 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
                     )[0]
 
             # mapInPandas accepts any iterable (e.g. a list), not just an
-            # iterator, so the standard verify_return_type (which requires an
-            # Iterator) is intentionally not reused here.
-            result = map_udf(dataframe_iter())
-            if not isinstance(result, Iterator) and not hasattr(result, "__iter__"):
-                raise PySparkTypeError(
-                    errorClass="UDF_RETURN_TYPE",
-                    messageParameters={
-                        "expected": "iterator of {}".format(iter_type_label),
-                        "actual": type(result).__name__,
-                    },
-                )
+            # iterator; verify_return_type(Iterable[...]) checks the container
+            # and each element lazily on consumption.
+            result = verify_return_type(map_udf(dataframe_iter()), Iterable[elem_type])
 
             for df in result:
-                if not isinstance(df, elem_type):
-                    raise PySparkTypeError(
-                        errorClass="UDF_RETURN_TYPE",
-                        messageParameters={
-                            "expected": "iterator of {}".format(iter_type_label),
-                            "actual": "iterator of {}".format(type(df).__name__),
-                        },
-                    )
                 verify_pandas_result(
                     df, return_type, assign_cols_by_name=True, truncate_return_schema=True
                 )
@@ -3022,19 +3030,10 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
                 results = []
                 for udf_func, offsets, udf_return_type in udf_infos:
                     result = udf_func(*[pandas_columns[o] for o in offsets])
-                    if not hasattr(result, "__len__"):
-                        pd_type = (
-                            "pandas.DataFrame"
-                            if isinstance(udf_return_type, StructType)
-                            else "pandas.Series"
-                        )
-                        raise PySparkTypeError(
-                            errorClass="UDF_RETURN_TYPE",
-                            messageParameters={
-                                "expected": pd_type,
-                                "actual": type(result).__name__,
-                            },
-                        )
+                    elem_type = (
+                        pd.DataFrame if isinstance(udf_return_type, StructType) else pd.Series
+                    )
+                    verify_return_type(result, Collection[elem_type])
                     verify_result_row_count(len(result), num_rows)
                     # struct_in_pandas="dict": UDF must return DataFrame for struct types
                     if isinstance(udf_return_type, StructType) and not isinstance(
@@ -3613,15 +3612,7 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
                     data_batch_for_group = data_batch.slice(data_start_offset, num_data_rows)
                     yield (to_pandas(data_batch_for_group), state)
 
-        def verify_element(result: "pd.DataFrame") -> "pd.DataFrame":
-            if not isinstance(result, pd.DataFrame):
-                raise PySparkTypeError(
-                    errorClass="UDF_RETURN_TYPE",
-                    messageParameters={
-                        "expected": "iterator of pandas.DataFrame",
-                        "actual": "iterator of {}".format(type(result).__name__),
-                    },
-                )
+        def verify_column_count(result: "pd.DataFrame") -> "pd.DataFrame":
             # The number of columns of the result must match the return type,
             # but an empty result with no columns at all is acceptable.
             if not (
@@ -3659,6 +3650,8 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
 
             result_iter = f(key, values, state)
 
+            # A DataFrame is itself iterable (over columns), so reject it up
+            # front: the UDF must return an iterable OF DataFrames, not one.
             if isinstance(result_iter, pd.DataFrame):
                 raise PySparkTypeError(
                     errorClass="UDF_RETURN_TYPE",
@@ -3667,18 +3660,11 @@ def read_udfs(pickleSer, udf_info_list, eval_type, runner_conf, eval_conf):
                         "actual": type(result_iter).__name__,
                     },
                 )
-            try:
-                iter(result_iter)
-            except TypeError:
-                raise PySparkTypeError(
-                    errorClass="UDF_RETURN_TYPE",
-                    messageParameters={
-                        "expected": "iterable",
-                        "actual": type(result_iter).__name__,
-                    },
-                )
 
-            return (verify_element(x) for x in result_iter)
+            # verify_return_type(Iterable[...]) checks the container is iterable
+            # and each element is a DataFrame lazily on consumption.
+            verified = verify_return_type(result_iter, Iterable[pd.DataFrame])
+            return (verify_column_count(x) for x in verified)
 
         def construct_state_pdf(state: GroupState) -> "pd.DataFrame":
             """Construct a single-row pandas DataFrame from the state instance."""

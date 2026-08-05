@@ -37,9 +37,11 @@ type expression; there is no per-site custom label parameter.
 | `X` (existing) | (none) | `isinstance(result, X)` | `pkg.X` |
 
 - `Iterator` and `Iterable` share the same lazy per-element `check_element`
-  logic; the only differences are the outer ABC checked and the label prefix
-  (`iterator of` vs `iterable of`). Factor the shared element-checking into a
-  small helper to avoid duplication.
+  logic; they differ in the outer ABC checked (strictness: `Iterator` rejects a
+  plain list, `Iterable` accepts it) and in the label prefix, which reflects the
+  requested shape (`iterator of` vs `iterable of`). Arrow UDFs request
+  `Iterator[...]` so they keep `iterator of`; the pandas sites converted here
+  request `Iterable[...]` so they read `iterable of`.
 - `Collection[X]` does NOT check elements. It replaces the array-like
   `hasattr(result, "__len__")` gate; element type is not meaningful there, so
   the label is the bare `pkg.X` (e.g. `pandas.Series`), matching what those
@@ -62,11 +64,11 @@ the abc class.)
 
 | Site (approx line) | current | change to | wording effect |
 |---|---|---|---|
-| mapInPandas outer (~2705) | hand `isinstance(Iterator) or hasattr(__iter__)`, `"iterator of {iter_type_label}"` | `verify_return_type(result, Iterable[elem_type])` | `iterator of` -> `iterable of` |
-| mapInPandas element (~2714) | hand per-element loop | absorbed by the `Iterable` branch's per-element check | same as above |
+| mapInPandas outer (~2705) | hand `isinstance(Iterator) or hasattr(__iter__)`, `"iterator of {iter_type_label}"` | `verify_return_type(result, Iterable[elem_type])` | `iterator of` -> `iterable of` (accurate: a list is accepted) |
+| mapInPandas element (~2714) | hand per-element loop | absorbed by the `Iterable` branch's per-element check | `iterator of` -> `iterable of` |
 | scalar pandas UDF (~3025) | hand `hasattr(__len__)`, dynamic `pandas.DataFrame`/`Series` | `verify_return_type(result, Collection[elem_type])` | wording unchanged; SEMANTIC TIGHTENING (below) |
-| grouped-map `verify_element` (~3616) | hand `isinstance(pd.DataFrame)` | reuse via `Iterator[pd.DataFrame]` element check | wording unchanged |
-| applyInPandasWithState iter() (~3670) | hand `iter()` + `TypeError`, label `"iterable"` | `verify_return_type(result, Iterable[pd.DataFrame])` | `iterable` -> `iterable of pandas.DataFrame` |
+| grouped-map `verify_element` (~3616) | hand `isinstance(pd.DataFrame)`, `"iterator of ..."` | absorbed by `Iterable[pd.DataFrame]` element check; closure keeps only column-count check | `iterator of` -> `iterable of` (untested path) |
+| applyInPandasWithState iter() (~3670) | hand `iter()` + `TypeError`, label `"iterable"` | `verify_return_type(result, Iterable[pd.DataFrame])` | `iterable` -> `iterable of pandas.DataFrame` (untested path) |
 
 Also delete the now-obsolete comment (~2701) that says `verify_return_type` is
 "intentionally not reused here" because it requires an `Iterator`.
@@ -98,10 +100,13 @@ Files to update (verify exact lines before editing):
 
 ## Design Decisions
 
-1. **Fully auto-generated, unified label.** Wording is determined solely by the
-   type shape (`Iterator[X]` / `Iterable[X]` / `Collection[X]` / `X`). No
-   per-site `label=` override. Sites that need different wording change the type
-   expression, not a string.
+1. **Fully auto-generated label, determined by the type shape**
+   (`Iterator[X]` -> `iterator of pkg.X`, `Iterable[X]` -> `iterable of pkg.X`,
+   `Collection[X]` / `X` -> `pkg.X`). No per-site `label=` override; a site that
+   needs different wording changes the type expression, not a string. The prefix
+   is accurate to what is accepted: an `Iterable` site truly accepts a plain
+   list, so `iterable of` is the correct word there, while `Iterator` sites
+   (Arrow UDFs) keep `iterator of`.
 2. **`Collection[X]` uses the bare `pkg.X` label** (no prefix), because it
    replaces sites that already emit the bare type name and check `__len__`.
 3. **Scalar pandas UDF (~3025) is a user-facing semantic tightening, not a
@@ -113,9 +118,12 @@ Files to update (verify exact lines before editing):
 4. **Single PR / single JIRA (SPARK-58598).** Extend + reuse + unify message +
    loosen tests ship together so the reviewer sees the full cause/effect. The
    message unification and test loosening are the direct consequence of reuse.
-5. **grouped-map (~3616) reuses `Iterator[pd.DataFrame]` element semantics**,
-   not `Iterable`: the outer iterable-ness is already validated at ~3670;
-   `verify_element` only checks that each element is a DataFrame.
+5. **applyInPandasWithState (~3656): the reverse `isinstance(pd.DataFrame)`
+   check stays hand-written** (a DataFrame is itself iterable over columns, so
+   it must be rejected up front); the `iter()` check becomes
+   `verify_return_type(result_iter, Iterable[pd.DataFrame])`, whose per-element
+   check subsumes the old `verify_element` type check. The closure is reduced to
+   `verify_column_count` (the `RESULT_COLUMN_SCHEMA_MISMATCH` check only).
 
 ## Rules & Conventions
 
